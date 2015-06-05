@@ -2,7 +2,12 @@
 
 var activeSession;
 
-/* Prototypes */
+/* Prototype Factories */
+
+function createRandomCharacter() {
+    
+    return createCastMember();
+}
 
 function createCastMember(name, nickname, pic, deathpic, stats, inventory) {
     
@@ -11,7 +16,7 @@ function createCastMember(name, nickname, pic, deathpic, stats, inventory) {
     if(nickname == null || typeof nickname != 'string')
         nickname = "";
     if(pic == null || typeof pic != 'string')
-        pic = "Blank";
+        pic = "White";
     if(deathpic == null || typeof deathpic != 'string')
         deathpic = "BW";
     if(stats == null)
@@ -36,20 +41,51 @@ function createCastMember(name, nickname, pic, deathpic, stats, inventory) {
 function createItem(name, type) {
     return {
         'name': name,
-        'type': type,
-        'createInstance': function() {
-            return {
-                
-            };
-        }
+        'type': type
     };
 }
 
-function createEvent(eventText, rarity, participents) {
+function createEvent(eventText, rarity, participentsAmt, participents, tags, requires, fatal) {
+    
+    if(eventText == null || typeof eventText != 'string')
+        eventText = "";
+    if(rarity == null || isNaN(rarity))
+        rarity = 0.5; 
+    if(participents == null)
+        participents = [];
+    if(tags == null)
+        tags = [];
+        
     return {
         'rarity': rarity,
+        'participentsAmt': participentsAmt,
         'participents': participents,
+        'tags': tags
     };
+}
+
+function getEventString(event) {
+    var eventString = event.eventText;
+    for(var count = 0; count < event.participentsAmt.length; ++count)
+        eventString = XRegExp.replace(eventString, '<participent' + count +'>', event.participents[count].name);
+        
+    return eventString;
+}
+
+function createSession() {
+    var newSession = {
+        'game': {
+            'cast': []
+        },
+        'eventSet': [],
+        'itemSet': [],
+        'settings': {}
+    };
+    
+    for(var count = 0; count < 24; ++count)
+        newSession.game.cast.push(createRandomCharacter());
+        
+    return newSession;
 }
 
 /* Storage */
@@ -157,7 +193,7 @@ function exportSettings() {
 
 function importSettings(settingsInput) {
     var settings = JSON.parse(settingsInput);
-    $.jStorage.set("itemSets." + settings.name, settings);
+    $.jStorage.set("settings." + settings.name, settings);
 }
 
 /* Logic */
@@ -169,12 +205,9 @@ function simulate() {
 /* Main */
 
 $( document ).ready(function() {
-    var myButton = document.getElementById("clickButton");
-    var myText = document.getElementById("helloText");
+    $( "#sidebar" ).load( "./widget/sidebar.html" );
     
-    myButton.addEventListener('click', doSomething, false)
-    
-    function doSomething() {
-    	myText.textContent = "hello, world!";
-    }
+    var activeSession = loadSession($.jStorage.get("activeSession"));
+    if(activeSession == null)
+        activeSession = createSession();
 });
