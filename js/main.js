@@ -6,11 +6,21 @@ var activeSession;
 
 function createRandomCharacter() {
     
-    return createCastMember();
+    return createCharacter();
 }
 
-function createCastMember(name, nickname, pic, deathpic, stats, inventory) {
+function createCharacter(name, nickname, pic, deathpic, stats, inventory) {
     
+    if(name.name != null && typeof name.name == 'string') {
+        var character = name;
+        name = character.name;
+        nickname = character.nickname;
+        pic = character.pic;
+        deathpic = character.deathpic;
+        stats = character.stats;
+        inventory = character.inventory;
+    }
+
     if(name == null || typeof name != 'string')
         name = "";
     if(nickname == null || typeof nickname != 'string')
@@ -39,6 +49,18 @@ function createCastMember(name, nickname, pic, deathpic, stats, inventory) {
 }
 
 function createItem(name, type) {
+    
+    if(name.name != null && typeof name.name == 'string') {
+        var item = name;
+        name = item.name;
+        type = item.type;
+    }
+    
+    if(name == null || typeof name != 'string')
+        name = "";
+    if(name == null || typeof name != 'string')
+        name = "";
+    
     return {
         'name': name,
         'type': type
@@ -46,6 +68,17 @@ function createItem(name, type) {
 }
 
 function createEvent(eventText, rarity, participentsAmt, participents, tags, requires, fatal) {
+    
+    if(eventText.eventText != null && typeof eventText.eventText == 'string') {
+        var event = eventText;
+        eventText = event.eventText;
+        rarity = event.rarity;
+        participentsAmt = event.participentsAmt;
+        participents = event.participents;
+        tags = event.tags;
+        requires = event.requires;
+        fatal = event.fatal;
+    }
     
     if(eventText == null || typeof eventText != 'string')
         eventText = "";
@@ -196,6 +229,28 @@ function importSettings(settingsInput) {
     $.jStorage.set("settings." + settings.name, settings);
 }
 
+function saveCharacter(characterName) {
+    $.jStorage.set("characters." + characterName, activeSession.game.cast.);
+}
+
+function loadCharacter(characterName) {
+    activeSession.game.cast.push($.jStorage.get("characters." + characterName));
+}
+
+function deleteCharacter(characterName) {
+    $.jStorage.deleteKey("characters." + characterName);
+}
+
+function exportCharacter() {
+   return JSON.stringify(activeSession.characterName);
+}
+
+function importCharacter(settingsInput) {
+    var settings = JSON.parse(settingsInput);
+    $.jStorage.set("settings." + settings.name, settings);
+}
+
+
 /* Logic */
 
 function simulate() {
@@ -205,9 +260,19 @@ function simulate() {
 /* Main */
 
 $( document ).ready(function() {
-    $( "#sidebar" ).load( "./widget/sidebar.html" );
+    $("#sidebar").load( "./widget/sidebar.html" );
+    
+    var hashString = $(this).attr('href').replace(/^.*?(#|$)/,'');
+    if(hashString != null && typeof hashString == "string")
+        $("#mainContent").load("./pg/" + hashString + ".html");
     
     var activeSession = loadSession($.jStorage.get("activeSession"));
     if(activeSession == null)
         activeSession = createSession();
+});
+
+$(window).onhashchange( function(){
+    var hashString = $(this).attr('href').replace(/^.*?(#|$)/,'');
+    if(hashString != null && typeof hashString == "string")
+        $("#mainContent").load("./pg/" + hashString + ".html");
 });
