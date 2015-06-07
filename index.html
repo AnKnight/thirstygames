@@ -3,19 +3,47 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Thirsty Games</title>
-		<link rel="stylesheet" type="text/css" href="./css/default.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+		<link rel="stylesheet" type="text/css" href="./css/side-menu.css">
+		<link rel="stylesheet" type="text/css" href="./css/default.css">
+
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/xregexp/2.0.0/xregexp-min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script type="text/javascript" src="./lib/chance.min.js"></script>
-		<script type="text/javascript" src="./lib/jstorage.min.js"></script>
-		<script type="text/javascript" src="./lib/taffy.min.js"></script>
-		<script type="text/javascript" src="./lib/jsviews.min.js"></script>
+		<script type="text/javascript" src="./js/lib/chance.min.js"></script>
+		<script type="text/javascript" src="./js/lib/jstorage.min.js"></script>
+		<script type="text/javascript" src="./js/lib/taffy.min.js"></script>
 		<script type="text/javascript" src="./js/main.js"></script>
 	</head>
 	<body>
-		<div id="sidebar"></div>
-		<div id="mainContent"></div>
+		<div id="layout" class="content pure-g">
+		    <div id="nav" class="pure-u">
+		        <a href="#" class="nav-menu-button">Menu</a>
+		        <div class="nav-inner">
+		        	<a class="pure-menu-heading" href="">Thirsty <br /> Games</a>
+		            <div class="pure-menu">
+		            	
+		                <ul class="pure-menu-list">
+		                    <li class="accordian-menu">
+		                    	<a class="pure-menu-heading accordian-menu-button">Edit</a>
+		                    	<ul class="accordian-menu-ul" style="display:none">
+			                    	<li class="pure-menu-item"><a href="#editCharacter" class="pure-menu-link">Edit Character</a></li>
+				                    <li class="pure-menu-item"><a href="#editItem" class="pure-menu-link">Edit Item</a></li>
+				                    <li class="pure-menu-item"><a href="#editEvent" class="pure-menu-link">Edit Event</a></li>
+				                    <li class="pure-menu-item"><a class="pure-menu-link pure-menu-disabled">Edit Cast</a></li>
+				                    <li class="pure-menu-item"><a class="pure-menu-link pure-menu-disabled">Edit Item Set</a></li>
+				                    <li class="pure-menu-item"><a class="pure-menu-link pure-menu-disabled">Edit Event Set</a></li>
+		                    	</ul>
+		                    </li>
+		                </ul>
+		            </div>
+		        </div>
+		    </div>
+		
+		    <div id="main" class="pure-u-1">
+		    </div>
+		</div>
 	</body>
 </html>

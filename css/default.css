@@ -1,18 +1,17 @@
-html, body {
-    margin: 0px;
-    height: 100%;
-    width: 100%;
-}
+
 
 body {
-    min-height: 100%;
     font-family: Georgia, Arial, sans-serif;
     background-color: #E3F0FB;
     border-radius: 4px;
     text-align: center;
 }
 
-#sidebar {
-    width: 15%;
-    background-color: #E3F0FF;
+.accordian-menu-ul {
+    padding:0;
+}
+
+.noHover:hover,
+.noHover:focus{
+    background-color: transparent;
 }

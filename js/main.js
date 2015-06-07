@@ -1,66 +1,105 @@
+/*global TAFFY, XRegExp, Chance */
+
 /* Globals */
 
-var activeSession;
+var activeSession = {
+    "name": "", // Name and ID of the current session.
+    "gameID": "",
+    "game": {
+        "day": 0, // From 0 counting up till there's a winner.
+        "time": "", // Morning-> Midday-> Evening-> Midnight Looping.
+        "castID": "", // ID of the current cast set.
+        "eventSetID": "", // ID of the current event set.
+        "itemSetID": "", // ID of the current item set.
+        "settingsID": "" // ID of the current settings.
+    },
+    "cast": [], // Cast set Filter. Array of Character IDs.
+    "eventSet": [], //  Event set Filter. Array of Event IDs.
+    "itemSet": [], // Item set Filter. Array of Item IDs.
+    "settings": {} 
+};
+var characters = TAFFY().store("characters");
+var events = TAFFY().store("events");
+var items = TAFFY().store("items");
+
 
 /* Prototype Factories */
 
-function createRandomCharacter() {
+function createRandomCharacters(ammount) {
+    var characters;
+    if(ammount == 1)
+        characters = createRandomCharacter();
+    else {
+        characters = [];
+        for(var count = 0; count < ammount; ++count)
+            characters.push(createRandomCharacter());
+    }
     
-    return createCharacter();
+    return characters;
+}
+
+function createRandomCharacter() {
+    var character;
+    
+    character = createCharacter();
+    
+    return character;
 }
 
 function createCharacter(name, nickname, pic, deathpic, stats, inventory) {
-    
-    if(name.name != null && typeof name.name == 'string') {
-        var character = name;
-        name = character.name;
-        nickname = character.nickname;
-        pic = character.pic;
-        deathpic = character.deathpic;
-        stats = character.stats;
-        inventory = character.inventory;
+
+    if(name !=null && typeof name != 'string') {
+        if (name.name != null && typeof name.name == 'string') {
+            var character = name;
+            name = character.name;
+            nickname = character.nickname;
+            pic = character.pic;
+            deathpic = character.deathpic;
+            stats = character.stats;
+            inventory = character.inventory;
+        }
     }
 
-    if(name == null || typeof name != 'string')
+    if (name == null || typeof name != 'string')
         name = "";
-    if(nickname == null || typeof nickname != 'string')
+    if (nickname == null || typeof nickname != 'string')
         nickname = "";
-    if(pic == null || typeof pic != 'string')
+    if (pic == null || typeof pic != 'string')
         pic = "White";
-    if(deathpic == null || typeof deathpic != 'string')
+    if (deathpic == null || typeof deathpic != 'string')
         deathpic = "BW";
-    if(stats == null)
+    if (stats == null)
         stats = {};
-    if(stats.brave == null || isNaN(stats.brave))
-        stats.brave = 5; 
-    if(stats.lewd == null || isNaN(stats.lewd))
+    if (stats.brave == null || isNaN(stats.brave))
+        stats.brave = 5;
+    if (stats.lewd == null || isNaN(stats.lewd))
         stats.lewd = 5;
-    if(inventory == null)
+    if (inventory == null)
         inventory = {};
-    
+
     return {
         'name': name,
         'nickname': nickname,
         'pic': pic,
         'deathpic': deathpic,
-        'stats' : stats,
+        'stats': stats,
         'inventory': inventory
     };
 }
 
 function createItem(name, type) {
-    
-    if(name.name != null && typeof name.name == 'string') {
+
+    if (name.name != null && typeof name.name == 'string') {
         var item = name;
         name = item.name;
         type = item.type;
     }
-    
-    if(name == null || typeof name != 'string')
+
+    if (name == null || typeof name != 'string')
         name = "";
-    if(name == null || typeof name != 'string')
+    if (name == null || typeof name != 'string')
         name = "";
-    
+
     return {
         'name': name,
         'type': type
@@ -68,8 +107,8 @@ function createItem(name, type) {
 }
 
 function createEvent(eventText, rarity, participentsAmt, participents, tags, requires, fatal) {
-    
-    if(eventText.eventText != null && typeof eventText.eventText == 'string') {
+
+    if (eventText.eventText != null && typeof eventText.eventText == 'string') {
         var event = eventText;
         eventText = event.eventText;
         rarity = event.rarity;
@@ -79,16 +118,16 @@ function createEvent(eventText, rarity, participentsAmt, participents, tags, req
         requires = event.requires;
         fatal = event.fatal;
     }
-    
-    if(eventText == null || typeof eventText != 'string')
+
+    if (eventText == null || typeof eventText != 'string')
         eventText = "";
-    if(rarity == null || isNaN(rarity))
-        rarity = 0.5; 
-    if(participents == null)
+    if (rarity == null || isNaN(rarity))
+        rarity = 0.5;
+    if (participents == null)
         participents = [];
-    if(tags == null)
+    if (tags == null)
         tags = [];
-        
+
     return {
         'rarity': rarity,
         'participentsAmt': participentsAmt,
@@ -99,9 +138,9 @@ function createEvent(eventText, rarity, participentsAmt, participents, tags, req
 
 function getEventString(event) {
     var eventString = event.eventText;
-    for(var count = 0; count < event.participentsAmt.length; ++count)
-        eventString = XRegExp.replace(eventString, '<participent' + count +'>', event.participents[count].name);
-        
+    for (var count = 0; count < event.participentsAmt.length; ++count)
+        eventString = XRegExp.replace(eventString, '<participent' + count + '>', event.participents[count].name);
+
     return eventString;
 }
 
@@ -114,165 +153,156 @@ function createSession() {
         'itemSet': [],
         'settings': {}
     };
-    
-    for(var count = 0; count < 24; ++count)
+
+    for (var count = 0; count < 24; ++count)
         newSession.game.cast.push(createRandomCharacter());
-        
+
     return newSession;
 }
 
+
+
 /* Storage */
 
-function saveSession(sessionName) {
-    $.jStorage.set("sessions." + sessionName, activeSession);
+//Session, Game, Cast, Characters, EventSet, ItemSet
+
+function saveToStorage(type, dataName) {
+    //$.jStorage.set(type + "." + dataName,);
 }
 
-function loadSession(sessionName) {
-    activeSession = $.jStorage.get("sessions." + sessionName);
-    $.jStorage.set("activeSession", sessionName);
+function loadFromStorage(type, dataName) {
+    if(type == "session") {
+        activeSession = $.jStorage.get(type + "." + dataName);
+        $.jStorage.set("activeSession", dataName);
+    }
+    else if(type == "game") {
+        
+    }
+    else {
+        //active
+    }
 }
 
-function deleteSession(sessionName) {
-    $.jStorage.deleteKey("sessions." + sessionName);
+function deleteFromStorage(type, dataName) {
+    $.jStorage.deleteKey(type + "." + dataName);
 }
 
-function exportSession() {
+function exportJSON(type) {
     return JSON.stringify(activeSession);
 }
 
-function importSession(sessionJSON) {
-    activeSession = JSON.parse(sessionJSON);
-    $.jStorage.set("activeSession", activeSession.name);
+function importJSON(type, dataJSON, destination) {
+    var importedData = JSON.parse(dataJSON);
+    if (destination == "STORAGE")
+        $.jStorage.set(type + "." + importedData.name, importedData)
+    else
+        $.jStorage.set("activeSession", importedData);
 }
 
-function saveGame(gameName) {
-    $.jStorage.set("sessions." + gameName, activeSession.game);
-}
+/* Database */
 
-function loadGame(gameName) {
-    activeSession.game = $.jStorage.get("games." + gameName);
+function filterDB( filters ) {
+    
 }
-
-function deleteGame(gameName) {
-    $.jStorage.deleteKey("games." + gameName);
-}
-
-function exportGame() {
-   return JSON.stringify(activeSession.game);
-}
-
-function importGame(gameInput) {
-    var game = JSON.parse(gameInput);
-    $.jStorage.set("games." + game.name, game);
-}
-
-function saveEventSet(eventSetName) {
-    $.jStorage.set("eventSets." + eventSetName, activeSession.eventSet);
-}
-
-function loadEventSet(eventSetName) {
-    activeSession.eventSet = $.jStorage.get("eventSets." + eventSetName);
-}
-
-function deleteEventSet(eventSetName) {
-    $.jStorage.deleteKey("eventSets." + eventSetName);
-}
-
-function exportEventSet() {
-   return JSON.stringify(activeSession.eventSet);
-}
-
-function importEventSet(eventSetInput) {
-    var eventSet = JSON.parse(eventSetInput);
-    $.jStorage.set("eventSets." + eventSet.name, eventSet);
-}
-
-function saveItemSet(itemSetName) {
-    $.jStorage.set("itemSets." + itemSetName, activeSession.itemSet);
-}
-
-function loadItemSet(itemSetName) {
-    activeSession.eventSet = $.jStorage.get("itemSets." + itemSetName);
-}
-
-function deleteItemSet(itemSetName) {
-    $.jStorage.deleteKey("itemSets." + itemSetName);
-}
-
-function exportItemSet() {
-   return JSON.stringify(activeSession.itemSet);
-}
-
-function importItemSet(itemSetInput) {
-    var itemSet = JSON.parse(itemSetInput);
-    $.jStorage.set("itemSets." + itemSet.name, itemSet);
-}
-
-function saveSettings(settingsName) {
-    $.jStorage.set("settings." + settingsName, activeSession.settings);
-}
-
-function loadSettings(settingsName) {
-    activeSession.eventSet = $.jStorage.get("settings." + settingsName);
-}
-
-function deleteSettings(settingsName) {
-    $.jStorage.deleteKey("settings." + settingsName);
-}
-
-function exportSettings() {
-   return JSON.stringify(activeSession.settingsName);
-}
-
-function importSettings(settingsInput) {
-    var settings = JSON.parse(settingsInput);
-    $.jStorage.set("settings." + settings.name, settings);
-}
-
-function saveCharacter(characterName) {
-    $.jStorage.set("characters." + characterName, activeSession.game.cast.);
-}
-
-function loadCharacter(characterName) {
-    activeSession.game.cast.push($.jStorage.get("characters." + characterName));
-}
-
-function deleteCharacter(characterName) {
-    $.jStorage.deleteKey("characters." + characterName);
-}
-
-function exportCharacter() {
-   return JSON.stringify(activeSession.characterName);
-}
-
-function importCharacter(settingsInput) {
-    var settings = JSON.parse(settingsInput);
-    $.jStorage.set("settings." + settings.name, settings);
-}
-
 
 /* Logic */
 
+function resetGame() {
+    activeSession.game.day = 0;
+    activeSession.game.time = "Morning";
+}
+
+function nextTime(current) {
+    var next = "";
+    
+    if(current === "Morning")
+        next = "Midday"; 
+    else if(current === "Midday")
+        next = "Evening";
+    else if(current === "Evening")
+        next = "Midnight";
+    else 
+        next = "Morning";
+    
+    return next;
+}
+
 function simulate() {
+    var game = activeSession.game;
+    var cast = activeSession.cast;
+    var itemSet = activeSession.itemSet;
+    var eventSet = activeSession.eventSet;
+    
+    if(game.time === "Midnight")
+        game.day++;
+    game.time = nextTime(game.time); 
+    
+  
+}
+
+function startSim() {
     
 }
 
 /* Main */
 
-$( document ).ready(function() {
-    $("#sidebar").load( "./widget/sidebar.html" );
+
+
+$(document).ready(function() {
+    jQuery.Animation.prefilter(function(element, properties, options) {
+        if (options.overrideOverflow) {
+            jQuery(element).css("overflow", options.overrideOverflow);
+        }
+    });
     
-    var hashString = $(this).attr('href').replace(/^.*?(#|$)/,'');
-    if(hashString != null && typeof hashString == "string")
-        $("#mainContent").load("./pg/" + hashString + ".html");
+    $("#sidebar").load("./widget/sidebar.html");
     
-    var activeSession = loadSession($.jStorage.get("activeSession"));
-    if(activeSession == null)
+    $("#editmenu").hide();
+    
+    $(".nav-menu-button").click(function () {
+        $("#nav").toggleClass('active');
+    });
+    
+    $(".accordian-menu").hover(function () {
+        if(!$(this).hasClass(".accordian-clicked"))
+            $(this).children(".accordian-menu-ul").stop(true,true).slideDown({"duration": 750, "easing": "linear", "overrideOverflow": "visible"});
+    }, function () {
+        if(!$(this).hasClass(".accordian-clicked"))
+            $(this).children(".accordian-menu-ul").stop(true,true).slideUp({"duration": 750, "easing": "linear", "overrideOverflow": "visible"});
+    });
+    
+    $(".accordian-menu-button").click(function() {
+        var parent = $(this).parent(".accordian-menu");
+        var menu = $(this).siblings(".accordian-menu-ul");
+        
+        if(parent.hasClass(".accordian-clicked")) {
+            parent.removeClass(".accordian-clicked");
+            menu.hide();
+        }
+        else {
+            parent.addClass(".accordian-clicked");
+            menu.show();
+        }
+    });
+
+    
+    $(window).bind('hashchange', function(){
+        var hash = location.hash.slice(1)
+        
+        console.log(hash);
+        
+        if(hash != "")
+            $("#main").load("./pg/" + hash + ".html");
+        else
+            $("#main").load("./pg/home.html");
+        
+        document.title = "Thirsty Games " + hash;
+
+    }).trigger('hashchange');
+
+    var activeSession = loadFromStorage($.jStorage.get("activeSession"));
+    if (activeSession == null)
         activeSession = createSession();
+        
 });
 
-$(window).onhashchange( function(){
-    var hashString = $(this).attr('href').replace(/^.*?(#|$)/,'');
-    if(hashString != null && typeof hashString == "string")
-        $("#mainContent").load("./pg/" + hashString + ".html");
-});
