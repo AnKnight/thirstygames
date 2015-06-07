@@ -52,7 +52,7 @@ a {
     width: 100%;
     height: 40px;
     position: relative;
-    background-color: #333;
+    background-color: #72374F;
     text-align: center;
 }
 /* Show the "Menu" button on phones */
@@ -61,6 +61,7 @@ a {
     top: 0.5em;
     right: 0.5em;
     position: absolute;
+    color: #E288AB;
 }
 
 /* When "Menu" is clicked, the navbar should be 80% height */
@@ -88,25 +89,19 @@ a {
     border: none;
     text-align: left;
 }
-#nav .pure-menu .pure-menu-heading:hover,
-#nav .pure-menu .pure-menu-heading:focus {
-    background: rgb(55, 60, 90);
-}
     #nav .pure-menu-link:hover,
     #nav .pure-menu-link:focus {
         background: rgb(55, 60, 90);
     }
     #nav .pure-menu-link {
         color: #fff;
-        padding-left: 1.5em;
+        margin-left: 0.5em;
     }
-
     #nav .pure-menu-heading {
         border-bottom: none;
-        font-size:150%;
-        color: rgb(75, 113, 151);
+        font-size:110%;
+        color: #E288AB;
     }
-
 
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
@@ -117,19 +112,19 @@ a {
 
     /* Move the layout over so we can fit the nav + list in on the left */
     #layout {
-        padding-left:500px; /* "left col (nav + list)" width */
+        padding-left:150px; /* "left col (nav + list)" width */
         position: relative;
     }
 
     /* These are position:fixed; elements that will be in the left 500px of the screen */
-    #nav, #list {
+    #nav{
         position: fixed;
         top: 0;
         bottom: 0;
         overflow: auto;
     }
     #nav {
-        margin-left:-500px; /* "left col (nav + list)" width */
+        margin-left:-150px; /* "left col (nav + list)" width */
         width:150px;
         height: 100%;
     }
@@ -137,19 +132,12 @@ a {
     /* Show the menu items on the larger screen */
     .nav-inner {
         display: block;
-        padding: 0.5em 0;
+        padding: 2em 0;
     }
-    
+
     /* Hide the "Menu" button on larger screens */
     #nav .nav-menu-button {
         display: none;
-    }
-
-    #list {
-        margin-left: -350px;
-        width: 100%;
-        height: 33%;
-        border-bottom: 1px solid #ddd;
     }
 
     #main {
@@ -157,9 +145,14 @@ a {
         top: 33%;
         right: 0;
         bottom: 0;
+        padding: 1em;
         left: 150px;
         overflow: auto;
         width: auto; /* so that it's not 100% */
+    }
+    
+    .logo {
+        width: 98%;
     }
 
 }
@@ -170,14 +163,6 @@ a {
  * of the mobile styles.
  */
 @media (min-width: 60em) {
-
-    /* This will take up the entire height, and be a little thinner */
-    #list {
-        margin-left: -350px;
-        width:350px;
-        height: 100%;
-        border-right: 1px solid #ddd;
-    }
 
     /* This will now take up it's own column, so don't need position: fixed; */
     #main {

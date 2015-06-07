@@ -21,6 +21,17 @@ var activeSession = {
 var characters = TAFFY().store("characters");
 var events = TAFFY().store("events");
 var items = TAFFY().store("items");
+var defaults = {
+    characters: [
+        createCharacter("Annon", "Annon", "https://media.8ch.net/ccrp/src/1433159607733.jpg", "BW", {brave:5, lewd:5}, {}),
+        createCharacter("Ramona", "Ramona", "https://media.8ch.net/ccrp/src/1433240537607.jpg", "BW", {brave:5, lewd:5}, {}),
+        createCharacter("Yemi", "Yemi-chan", "https://media.8ch.net/ccrp/src/1433196605277.jpg", "BW", {brave:5, lewd:5}, {}),
+        createCharacter("Ellie", "Ellie", "https://media.8ch.net/ccrp/src/1433193706663.jpg", "BW", {brave:5, lewd:5}, {}),
+        createCharacter("Jane", "Jane", "https://media.8ch.net/ccrp/src/1433168641538.png", "BW", {brave:5, lewd:5}, {}),
+        createCharacter("Amity", "Amity", "https://media.8ch.net/ccrp/src/1433367330253.jpg", "BW", {brave:5, lewd:5}, {}),
+        createCharacter("Nurai", "Nurai", "https://media.8ch.net/ccrp/src/1433366744383.jpg", "BW", {brave:5, lewd:5}, {}),
+    ]
+};
 
 
 /* Prototype Factories */
@@ -205,6 +216,27 @@ function filterDB( filters ) {
     
 }
 
+/* Interface */
+
+
+function loadCharacter(id) {
+    
+}
+
+function characterLoadUI(ele) {
+    
+    var charArray = characters().get();
+    
+    for(var count = 0; count < charArray.length; ++count) {
+        var char = charArray[count];
+        ele.append('<div class="pure-u-1-4 pure-u-sm-1-8 pure-u-md-12 characterBox" onclick="loadCharacter(' + char.name + ')">' + 
+        '<img style="width: 100%" src="' + char.pic + '" alt="' + char.name + '" /><br />' +
+        '<p>' + char.nickname + '</p>' + '</div>' );
+    }
+    
+    
+}
+
 /* Logic */
 
 function resetGame() {
@@ -265,10 +297,10 @@ $(document).ready(function() {
     
     $(".accordian-menu").hover(function () {
         if(!$(this).hasClass(".accordian-clicked"))
-            $(this).children(".accordian-menu-ul").stop(true,true).slideDown({"duration": 750, "easing": "linear", "overrideOverflow": "visible"});
+            $(this).children(".accordian-menu-ul").velocity("stop").velocity("fadeIn", { duration: 750 });
     }, function () {
         if(!$(this).hasClass(".accordian-clicked"))
-            $(this).children(".accordian-menu-ul").stop(true,true).slideUp({"duration": 750, "easing": "linear", "overrideOverflow": "visible"});
+            $(this).children(".accordian-menu-ul").velocity("stop").velocity("fadeOut", { duration: 750 });
     });
     
     $(".accordian-menu-button").click(function() {
@@ -277,7 +309,7 @@ $(document).ready(function() {
         
         if(parent.hasClass(".accordian-clicked")) {
             parent.removeClass(".accordian-clicked");
-            menu.hide();
+            menu.velocity("stop").velocity("fadeOut", { duration: 750 });
         }
         else {
             parent.addClass(".accordian-clicked");
@@ -299,6 +331,10 @@ $(document).ready(function() {
         document.title = "Thirsty Games " + hash;
 
     }).trigger('hashchange');
+
+    if(characters().get().length < 1)
+        characters.insert(defaults.characters);
+
 
     var activeSession = loadFromStorage($.jStorage.get("activeSession"));
     if (activeSession == null)

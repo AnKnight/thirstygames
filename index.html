@@ -6,12 +6,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
-		<link rel="stylesheet" type="text/css" href="./css/side-menu.css">
+		<link rel="stylesheet" type="text/css" href="./css/grids-responsive-min.css">
+		<link rel="stylesheet" type="text/css" href="./css/side-bar.css">
 		<link rel="stylesheet" type="text/css" href="./css/default.css">
 
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/xregexp/2.0.0/xregexp-min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/lib/velocity.min.js"></script>
 		<script type="text/javascript" src="./js/lib/chance.min.js"></script>
 		<script type="text/javascript" src="./js/lib/jstorage.min.js"></script>
 		<script type="text/javascript" src="./js/lib/taffy.min.js"></script>
@@ -20,12 +22,19 @@
 	<body>
 		<div id="layout" class="content pure-g">
 		    <div id="nav" class="pure-u">
-		        <a href="#" class="nav-menu-button">Menu</a>
+		        <a href="javascript:;" class="nav-menu-button">Menu</a>
 		        <div class="nav-inner">
-		        	<a class="pure-menu-heading" href="">Thirsty <br /> Games</a>
+		        	<a class="pure-menu-heading" href=""><img class="logo" src="./img/thirstygames.png" alt="Thirsty <br /> Games" /></a>
 		            <div class="pure-menu">
 		            	
 		                <ul class="pure-menu-list">
+		                	<li class="accordian-menu">
+		                    	<a class="pure-menu-heading accordian-menu-button">Game</a>
+		                    	<ul class="accordian-menu-ul" style="display:none">
+		                    		<li class="pure-menu-item"><a class="pure-menu-link pure-menu-disabled">Setup</a></li>
+			                    	<li class="pure-menu-item"><a class="pure-menu-link pure-menu-disabled">Day 0 Midday</a></li>
+		                    	</ul>
+		                    </li>
 		                    <li class="accordian-menu">
 		                    	<a class="pure-menu-heading accordian-menu-button">Edit</a>
 		                    	<ul class="accordian-menu-ul" style="display:none">
@@ -37,6 +46,7 @@
 				                    <li class="pure-menu-item"><a class="pure-menu-link pure-menu-disabled">Edit Event Set</a></li>
 		                    	</ul>
 		                    </li>
+		                    <li class="pure-menu-item"><a class="pure-menu-heading hover-link pure-menu-disabled">Settings</a></li>
 		                </ul>
 		            </div>
 		        </div>
