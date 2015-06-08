@@ -1,0 +1,45 @@
+<script>
+        
+     function saveCharacter() {
+        characters.insert(createCharacter(
+            $("#name").val(), 
+            $("#nickname").val(),
+            $("#pic").val(),
+            $("#deathpic").val(),
+            {brave:  $("#Shyness").val(), lewd:  $("#Lewdness").val()},
+            {}
+            ));
+    }
+        
+    $(document).ready(function() {
+        var ele = $("#stats");
+        
+        for(var count = 0; count < stats.length; ++count) {
+            var stat = stats[count];
+            ele.append('<label for="' + stat.name + '">' + stat.name + '</label>'
+                + '<input type="number" id="' + stat.name + '" name="' + stat.name + '"  placeholder="0-10" />');
+        }
+    });
+</script>
+
+<h1>Character Creator</h1>
+<form id="charCreatorForm" class="pure-form pure-form-stacked">
+    <h2>Details</h2>
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" placeholder="Name" />
+    <label for="nickname">Nickname</label>
+    <input type="text" id="nickname" name="nickname" placeholder="Nickname" />
+    <label for="pic">Picture</label>
+    <input type="text" id="pic" name="name" placeholder="Picture URL" />
+    <label for="deathpic">Death Picture</label>
+    <input type="text" id="deathpic" name="deathpic" placeholder="Either URL, BW or X" />
+    <fieldset name="stats" id="stats"> <legend><h2>Stats</h2></legend></fieldset>
+
+</form>
+
+    <div>
+    <button onclick="saveCharacter()" class="pure-button pure-button-primary">Save</button>
+    <a href="#editCharacter" class="pure-button pure-button-primary">Back</a>
+    </div>
+
+

@@ -1,8 +1,27 @@
 
 <div style="" id="characterSelection" class="pure-g"></div>
-<button id="loadBtn" class="pure-button pure-button-primary">New</button>
+<a href="#charCreator" id="loadBtn" class="pure-button pure-button-primary">New</a>
 
 <script>
+    
+    function loadCharacter(id) {
+        
+    }
+
+    function characterLoadUI(ele) {
+    
+    var charArray = characters().get();
+    
+    for(var count = 0; count < charArray.length; ++count) {
+        var char = charArray[count];
+        ele.append('<div class="pure-u-1-4 pure-u-md-1-8 characterBox" onclick="loadCharacter(' + char.name + ')">' + 
+        '<img style="width: 100%" src="' + char.pic + '" alt="' + char.name + '" /><br />' +
+        '<p>' + char.nickname + '</p>' + '</div>' );
+    }
+    
+    
+}
+
     $(document).ready(function() {
         characterLoadUI($("#characterSelection"));
     });

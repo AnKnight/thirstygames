@@ -21,6 +21,11 @@ var activeSession = {
 var characters = TAFFY().store("characters");
 var events = TAFFY().store("events");
 var items = TAFFY().store("items");
+var stats = [ { "name":"Shyness", "description": "" },
+    { "name":"Maturity", "description": "" },
+    { "name":"Kindess", "description": "" },
+    { "name":"Morality", "description": "" },
+    { "name":"Lewdness", "description": "" }];
 var defaults = {
     characters: [
         createCharacter("Annon", "Annon", "https://media.8ch.net/ccrp/src/1433159607733.jpg", "BW", {brave:5, lewd:5}, {}),
@@ -219,23 +224,6 @@ function filterDB( filters ) {
 /* Interface */
 
 
-function loadCharacter(id) {
-    
-}
-
-function characterLoadUI(ele) {
-    
-    var charArray = characters().get();
-    
-    for(var count = 0; count < charArray.length; ++count) {
-        var char = charArray[count];
-        ele.append('<div class="pure-u-1-4 pure-u-sm-1-8 pure-u-md-12 characterBox" onclick="loadCharacter(' + char.name + ')">' + 
-        '<img style="width: 100%" src="' + char.pic + '" alt="' + char.name + '" /><br />' +
-        '<p>' + char.nickname + '</p>' + '</div>' );
-    }
-    
-    
-}
 
 /* Logic */
 
